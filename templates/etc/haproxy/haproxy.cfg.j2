@@ -1,0 +1,13 @@
+frontend socks5
+   mode tcp
+   bind :3306
+   default_backend socks5_next_hop
+
+backend socks5_next_hop
+   mode tcp
+   balance leastconn
+   {% for peerName, peer in peers %}
+   {% if "forward-to-socks5" in peer["roles"] %}
+   server {{ peerName }} {{ hostvars[peerName]['ansible_facts']["wg_internal_ip"] }}:8090
+   {% endif %}
+   {% endfor %}

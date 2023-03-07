@@ -1,0 +1,13 @@
+[Unit]
+Description=SOCKSv5 server
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/socks-server
+User=nobody
+Group=nobody
+
+[Install]
+WantedBy=multi-user.target

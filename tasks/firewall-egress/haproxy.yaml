@@ -1,0 +1,15 @@
+- name: Install haproxy
+  package:
+      name: haproxy
+      state: present
+
+- name: Create configuration file
+  template:
+      src: etc/haproxy/haproxy.cfg
+      dest: /etc/haproxy/haproxy.cfg
+
+- name: Enable and start haproxy
+  systemd:
+      name: haproxy
+      state: restarted
+      enable: true

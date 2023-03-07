@@ -1,0 +1,14 @@
+vpn:
+    interface_name: rkt161
+
+3proxy:
+    version: 0.9.4
+
+nginx:
+    worker_processes: 4
+    worker_connections: 1024
+    tls_listen_opts: ""
+    tls_proxy_connect_timeout: "60"
+    tls_proxy_timeout: "30"
+    tls_dns_resolver: "45.76.37.222" # FreeDNS from 1984.is
+    tls_fail_timeout: "30"

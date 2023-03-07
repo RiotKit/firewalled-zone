@@ -1,0 +1,10 @@
+- include: vpn/main.yaml
+
+- include: ingress/main.yaml
+  when: node_role in ["exit", "firewall"]
+
+- include: firewall-egress/main.yaml
+  when: node_role == "firewall"
+
+- include: exit-egress/main.yaml
+  when: node_role == "exit"

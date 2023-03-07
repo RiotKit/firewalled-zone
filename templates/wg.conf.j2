@@ -1,0 +1,11 @@
+[Interface]
+PrivateKey = {{ wg_private_key }}
+Address = {{ wg_address }}/32
+
+{% for peerName, peer in peers %}
+[Peer]
+PublicKey = {{ hostvars[peerName]['ansible_facts']["wg_public_key"] }}
+{% if peer.externalIp %}Endpoint = {{ peer.externalIp }}{% endif %}
+AllowedIPs = {{ hostvars[peerName]['ansible_facts']["wg_internal_ip"] }}
+{% if peer.persistentKeepAlive %}PersistentKeepAlive = {{ peer.persistentKeepAlive }}{% endif %}
+{% endfor %}

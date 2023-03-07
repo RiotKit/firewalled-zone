@@ -1,0 +1,65 @@
+#
+# Strategy:
+#   1. Make sure all nodes are having generated PUBLIC and PRIVATE keys
+#   2. Generate configuration for each node by fetching PUBLIC keys from peers this node should connect to
+#   3. Setup systemd service
+#
+
+- name: Install wireguard tools
+  package:
+      name: wireguard-tools
+      state: present
+
+- name: Check if keypair was already generated
+  check_mode: yes
+  register: keypair_presence
+  lineinfile:
+      path: "/"
+      regexp: "^PrivateKey ="
+
+- set_fact:
+      wg_conf_path: "/etc/wireguard/{{ vpn.interface_name }}.conf"
+
+# First time it will create a private key and store it into the *.conf file
+# So in next step that key could be re-readed (for consistency)
+- name: Generate new keypair (if keypair was not already generated)
+  when: keypair_presence is changed
+  block:
+      - name: Generate private key
+        register: privkey_gen
+        shell: "wg genkey"
+
+      - name: Write minimalist WireGuard template
+        template:
+            src: templates/minimal-wg.conf.j2
+            dest: "{{ wg_conf_path }}"
+            owner: root
+
+- name: Retrieve private key
+  nolog: true
+  set_fact:
+      wg_private_key: "{{ lookup('ansible.builtin.ini', 'PrivateKey', section='Interface', file=wg_conf_path) }}"
+
+- name: Extract public key
+  nolog: true
+  register: public_key
+  shell: 'echo "{{ wg_private_key }}" | wg pubkey'
+
+- set_fact:
+      wg_public_key: "{{ public_key.stdout }}"
+
+# --------------------------------------------------------------------------------------
+# At this stage every node should have populated facts with PUBLIC KEY and PRIVATE KEY
+# so the template will iterate over the nodes and fetch required PUBLIC KEYS
+# --------------------------------------------------------------------------------------
+- name: Generate configuration
+  template:
+      src: templates/wg.conf.j2
+      dest: "{{ wg_conf_path }}"
+      owner: root
+
+- name: Create, enable and start systemd service
+  systemd:
+      name: "wg-quick@{{ vpn.interface_name }}.service"
+      enabled: true
+      state: restarted

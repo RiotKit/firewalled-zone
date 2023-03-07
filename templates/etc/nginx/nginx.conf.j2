@@ -1,0 +1,26 @@
+load_module /usr/lib/nginx/modules/ngx_stream_module.so;
+
+worker_processes {{ nginx.worker_processes }};
+pid /var/run/nginx.pid;
+
+events {
+    worker_connections {{ nginx.worker_connections }};
+}
+
+stream {
+    upstream tls_upstream {
+        {% for peerName, peer in peers %}
+            {% if hostvars[peerName]['ansible_facts']["node_role"] == "firewall" %}
+            server hostvars[peerName]['ansible_facts']["wg_internal_ip"]:443 fail_timeout={{ nginx.tls_fail_timeout }};
+            {% endif %}
+        {% endfor %}
+    }
+
+    server {
+        listen 443 {{ nginx.tls_listen_opts }};
+        proxy_connect_timeout {{ nginx.tls_proxy_connect_timeout }};
+        proxy_timeout {{ nginx.tls_proxy_timeout }};
+        resolver {{ nginx.tls_dns_resolver }};
+        proxy_pass tls_upstream;
+    }
+}

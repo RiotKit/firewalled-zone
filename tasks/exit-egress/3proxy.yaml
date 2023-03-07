@@ -1,0 +1,22 @@
+- name: Create script
+  template:
+      src: usr/bin/socks-server.sh.j2
+      dest: /usr/bin/socks-server
+      mode: u+rwx,g+rx,o+rx
+
+- name: Create systemd service
+  template:
+      src: etc/systemd/system/socks-server.service.j2
+      dest: /etc/systemd/system/socks-server.service
+
+- name: Make sure 3proxy is installed
+  apt:
+      deb: "https://github.com/3proxy/3proxy/releases/download/{{ 3proxy.version }}/3proxy-{{ 3proxy.version }}.x86_64.deb"
+
+# todo: create a dedicated user and group
+
+- name: Enable and start systemd service
+  systemd:
+      name: socks-server
+      enabled: true
+      state: restarted
