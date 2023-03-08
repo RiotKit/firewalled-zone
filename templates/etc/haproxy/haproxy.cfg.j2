@@ -1,11 +1,11 @@
 frontend socks5
    mode tcp
-   bind :1080
+   bind {{ haproxy_bind_ip | default(wg_internal_ip) }}:1080
    default_backend socks5_next_hop
 
 frontend http
    mode tcp
-   bind :8080
+   bind {{ haproxy_bind_ip | default(wg_internal_ip) }}:8080
    default_backend http_next_hop
 
 backend socks5_next_hop
