@@ -7,6 +7,8 @@ Approach is based on proxying ingress and egress traffic using reverse-proxy, SO
 Example configuration: one node on every level
 ----------------------------------------------
 
+![](./docs/architecture.png)
+
 ### exit-1
 
 ```yaml
