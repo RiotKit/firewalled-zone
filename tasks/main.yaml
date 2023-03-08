@@ -4,7 +4,7 @@
   when: node_role in ["exit", "firewall"]
 
 - include: firewall-egress/main.yaml
-  when: node_role == "firewall"
+  when: node_role == "firewall" or (setup_egress_proxy is defined and setup_egress_proxy)
 
 - include: exit-egress/main.yaml
   when: node_role == "exit"
