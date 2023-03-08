@@ -35,7 +35,7 @@ Example configuration: one node on every level
 
 ```yaml
 node_role: exit
-wg_internal_ip: 10.223.0.1
+wg_internal_ip: 10.100.0.1
 peers:
     - name: firewall-node-1
       relation: ["forward-ingress"]
@@ -45,7 +45,7 @@ peers:
 
 ```yaml
 node_role: firewall
-wg_internal_ip: 10.223.0.2
+wg_internal_ip: 10.100.0.2
 peers:
     - name: exit-1
       externalIp: 1.2.3.4
@@ -59,7 +59,7 @@ peers:
 
 ```yaml
 node_role: internal
-wg_internal_ip: 10.223.0.3
+wg_internal_ip: 10.100.0.3
 #wg_port: 51826
 
 # egress proxy accessible for Pods
