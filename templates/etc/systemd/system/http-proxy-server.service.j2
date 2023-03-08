@@ -6,8 +6,8 @@ After=network-online.target
 [Service]
 Type=simple
 ExecStart=/usr/bin/http-proxy-server
-User=nobody
-Group=nobody
+User=rktegress
+Group=rktegress
 
 [Install]
 WantedBy=multi-user.target

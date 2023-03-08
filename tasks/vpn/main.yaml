@@ -10,20 +10,22 @@
       name: wireguard-tools
       state: present
 
-- name: Check if keypair was already generated
-  check_mode: yes
-  register: keypair_presence
-  lineinfile:
-      path: "/"
-      regexp: "^PrivateKey ="
-
 - set_fact:
       wg_conf_path: "/etc/wireguard/{{ vpn.interface_name }}.conf"
+
+- name: Check if keypair was already generated
+  command: 'grep -q "PrivateKey" {{ wg_conf_path }}'
+  register: keypair_presence
+  check_mode: no
+  ignore_errors: yes
+
+- debug:
+      var: "{{ keypair_presence.rc }}"
 
 # First time it will create a private key and store it into the *.conf file
 # So in next step that key could be re-readed (for consistency)
 - name: Generate new keypair (if keypair was not already generated)
-  when: keypair_presence is changed
+  when: keypair_presence.rc > 0
   block:
       - name: Generate private key
         register: privkey_gen
@@ -35,15 +37,22 @@
             dest: "{{ wg_conf_path }}"
             owner: root
 
+- name: Read private key
+  shell: |
+      python3 -c "import configparser; c = configparser.ConfigParser(strict=False); c.read('/etc/wireguard/rkt161.conf'); print(c['Interface']['PrivateKey'])"
+  register: private_key
+
 - name: Retrieve private key
-  nolog: true
   set_fact:
-      wg_private_key: "{{ lookup('ansible.builtin.ini', 'PrivateKey', section='Interface', file=wg_conf_path) }}"
+      wg_private_key: "{{ private_key.stdout | trim }}"
 
 - name: Extract public key
-  nolog: true
   register: public_key
   shell: 'echo "{{ wg_private_key }}" | wg pubkey'
+
+- set_fact:
+      wg_port: "51821"
+  when: wg_port is not defined
 
 - set_fact:
       wg_public_key: "{{ public_key.stdout }}"
@@ -58,8 +67,14 @@
       dest: "{{ wg_conf_path }}"
       owner: root
 
+- name: Allow Wireguard on the firewall (UFW)
+  ufw:
+      rule: allow
+      port: "{{ wg_port }}"
+
 - name: Create, enable and start systemd service
   systemd:
       name: "wg-quick@{{ vpn.interface_name }}.service"
+      daemon_reload: true
       enabled: true
       state: restarted

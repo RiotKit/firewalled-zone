@@ -11,17 +11,17 @@ frontend http
 backend socks5_next_hop
    mode tcp
    balance leastconn
-   {% for peerName, peer in peers %}
+   {% for peer in peers %}
    {% if "forward-egress" in peer["relation"] %}
-   server {{ peerName }} {{ hostvars[peerName]['ansible_facts']["wg_internal_ip"] }}:1080
+   server {{ peer.name }} {{ hostvars[peer.name]["wg_internal_ip"] }}:1080
    {% endif %}
    {% endfor %}
 
 backend http_next_hop
    mode tcp
    balance leastconn
-   {% for peerName, peer in peers %}
+   {% for peer in peers %}
    {% if "forward-egress" in peer["relation"] %}
-   server {{ peerName }} {{ hostvars[peerName]['ansible_facts']["wg_internal_ip"] }}:8080
+   server {{ peer.name }} {{ hostvars[peer.name]["wg_internal_ip"] }}:8080
    {% endif %}
    {% endfor %}

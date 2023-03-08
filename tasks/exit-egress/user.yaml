@@ -1,0 +1,13 @@
+- name: Create proxy group
+  group:
+      name: rktegress
+      state: present
+      gid: 13121
+
+- name: Create proxy user
+  user:
+      name: rktegress
+      comment: "Riotkit egress proxy user"
+      uid: 13121
+      group: rktegress
+      shell: /bin/false

@@ -11,12 +11,13 @@
 
 - name: Make sure 3proxy is installed
   apt:
-      deb: "https://github.com/3proxy/3proxy/releases/download/{{ 3proxy.version }}/3proxy-{{ 3proxy.version }}.x86_64.deb"
+      deb: "https://github.com/3proxy/3proxy/releases/download/{{ freeproxy['version'] }}/3proxy-{{ freeproxy['version'] }}.x86_64.deb"
 
 # todo: create a dedicated user and group
 
 - name: Enable and start systemd service
   systemd:
       name: socks-server
+      daemon_reload: true
       enabled: true
       state: restarted

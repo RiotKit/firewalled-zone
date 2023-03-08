@@ -1,7 +1,7 @@
 vpn:
     interface_name: rkt161
 
-3proxy:
+freeproxy:
     version: 0.9.4
 
 nginx:

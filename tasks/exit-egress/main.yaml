@@ -1,2 +1,17 @@
+- include: user.yaml
 - include: socks.yaml
 - include: http.yaml
+
+- name: Allow SOCKSv5 port on VPN interface
+  ufw:
+      rule: allow
+      port: "8080"
+      interface: "{{ vpn['interface_name'] }}"
+      direction: in
+
+- name: Allow HTTP proxy port on VPN interface
+  ufw:
+      rule: allow
+      port: "1080"
+      interface: "{{ vpn['interface_name'] }}"
+      direction: in

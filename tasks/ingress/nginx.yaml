@@ -11,5 +11,6 @@
 - name: Enable and start systemd service
   systemd:
       name: nginx
+      daemon_reload: true
       enabled: true
       state: restarted
