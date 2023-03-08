@@ -1,0 +1,13 @@
+[Unit]
+Description=HTTP proxy server
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/http-proxy-server
+User=nobody
+Group=nobody
+
+[Install]
+WantedBy=multi-user.target

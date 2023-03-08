@@ -1,1 +1,2 @@
-- include: 3proxy.yaml
+- include: socks.yaml
+- include: http.yaml

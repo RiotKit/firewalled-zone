@@ -1,0 +1,16 @@
+- name: Create script
+  template:
+      src: usr/bin/http-proxy-server.sh.j2
+      dest: /usr/bin/http-proxy-server
+      mode: u+rwx,g+rx,o+rx
+
+- name: Create systemd service
+  template:
+      src: etc/systemd/system/http-proxy-server.service.j2
+      dest: /etc/systemd/system/http-proxy-server.service
+
+- name: Enable and start systemd service
+  systemd:
+      name: http-proxy-server
+      enabled: true
+      state: restarted
