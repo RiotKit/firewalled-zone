@@ -1,16 +1,2 @@
 - include: nginx.yaml
-
-- name: Allow port 443 on VPN interface
-  ufw:
-      rule: allow
-      port: "443"
-      interface: "{{ vpn['interface_name'] }}"
-      direction: in
-
-- name: Allow port 80 on VPN interface
-  ufw:
-      rule: allow
-      port: "80"
-      interface: "{{ vpn['interface_name'] }}"
-      direction: in
-
+- include: firewall.yaml

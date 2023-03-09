@@ -1,0 +1,27 @@
+- when: node_role in ["firewall"]
+  block:
+      -   name: Allow port 443 on VPN interface (firewall node only)
+          ufw:
+              rule: allow
+              port: "443"
+              interface: "{{ vpn['interface_name'] }}"
+              direction: in
+
+      -   name: Allow port 80 on VPN interface (firewall node only)
+          ufw:
+              rule: allow
+              port: "80"
+              interface: "{{ vpn['interface_name'] }}"
+              direction: in
+
+- when: node_role in ["exit"]
+  block:
+      -   name: Allow port 443 on 0.0.0.0 (exit node only)
+          ufw:
+              rule: allow
+              port: "443"
+
+      -   name: Allow port 80 on 0.0.0.0 (exit node only)
+          ufw:
+              rule: allow
+              port: "80"
