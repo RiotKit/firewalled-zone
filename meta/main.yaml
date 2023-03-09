@@ -1,0 +1,19 @@
+galaxy_info:
+    author: Riotkit
+    description: Create secure networks with double firewalls and load balancing behind internal networks
+    company: Riotkit Non-Profit
+    license: "Apache 2"
+    min_ansible_version: 2.12
+
+    galaxy_tags:
+        - security
+        - wireguard
+        - vpn
+        - networks
+        - "3proxy"
+        - proxy
+        - "reverse-proxy"
+        - haproxy
+        - nginx
+
+dependencies: []
