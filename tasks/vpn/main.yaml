@@ -39,7 +39,7 @@
 
 - name: Read private key
   shell: |
-      python3 -c "import configparser; c = configparser.ConfigParser(strict=False); c.read('/etc/wireguard/rkt161.conf'); print(c['Interface']['PrivateKey'])"
+      python3 -c "import configparser; c = configparser.ConfigParser(strict=False); c.read('/etc/wireguard/{{ vpn['interface_name'] }}.conf'); print(c['Interface']['PrivateKey'])"
   register: private_key
 
 - name: Retrieve private key
